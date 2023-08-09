@@ -15,11 +15,29 @@ async def write_genre(file_name):
     name of the given file
     """
 
-    
+    async with aiohttp.ClientSession() as session:
+        async with session.get("http://binaryjazz.us/wp-json/genrenator/v1/genre") as response:
+            genre = await response.json()
+
+    async with aiofiles.open(file_name, "w") as new_file:
+        print(f"{time.ctime()} - Writing '{genre}' to '{file_name}'...")
+        await new_file.write(genre)
 
 
 async def main():
+    tasks = []
+
+    print(f"{time.ctime()} - Starting...")
+    start = time.time()
+
+    for i in range(5):
+        tasks.append(write_genre(f"./asyncout/new_file{i}.txt"))
+
+    await asyncio.gather(*tasks)
     
+    end = time.time()
+    print(f"Time to complete asyncio read/writes: {round(end - start, 2)} seconds")
+
 
 if __name__ == "__main__":
     # On Windows, this finishes successfully, but throws 'RuntimeError: Event loop is closed'
@@ -29,3 +47,16 @@ if __name__ == "__main__":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     asyncio.run(main())
+
+
+## Result
+# PS E:\00Lab\IOT\asyncio_exercise\class6-asyncio> & C:/Users/karnt/AppData/Local/Programs/Python/Python310/python.exe e:/00Lab/IOT/asyncio_exercise/class6-asyncio/2-1-aiohttp-aiofile.py
+# Wed Aug  9 13:48:20 2023 - Starting...
+# Wed Aug  9 13:48:22 2023 - Writing 'dansnew wave/EBMfuture' to './asyncout/new_file4.txt'...
+# Wed Aug  9 13:48:22 2023 - Writing 'necroblues/dreamo party' to './asyncout/new_file1.txt'...
+# Wed Aug  9 13:48:22 2023 - Writing 'dixievision' to './asyncout/new_file2.txt'...
+# Wed Aug  9 13:48:22 2023 - Writing 'melodic french horndown' to './asyncout/new_file0.txt'...  
+# Wed Aug  9 13:48:22 2023 - Writing 'dirty south synthcoustica' to './asyncout/new_file3.txt'...
+# Time to complete asyncio read/writes: 1.55 seconds
+
+## สร้างไฟล์ 5 ไฟล์ ในโฟลเดอร์ asyncout
