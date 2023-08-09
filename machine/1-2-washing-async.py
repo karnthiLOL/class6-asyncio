@@ -15,10 +15,29 @@ import time
 import asyncio
 
 async def wash(basket):
-    
+    print(f'{time.ctime()} - Washing Machine ({basket}): Put the coin')
+    print(f'{time.ctime()} - Washing Machine ({basket}): Start washing...')
+    await asyncio.sleep(5)
+    print(f'{time.ctime()} - Washing Machine ({basket}): Finished washing')
+    return f'{basket} is completed'
 
+## My Solution using gather
+# async def main():
+#     await asyncio.gather(
+#         wash('Basket A'),
+#         wash('Basket B')
+#     )
+
+## from slide
 async def main():
-    
+    coro = wash('Basket A')
+    print(coro)
+    print((type(coro)))
+    task = asyncio.create_task(coro)
+    print(task)
+    print(type(task))
+    result = await task
+    print(result)
 
 if __name__ == '__main__':
     t1 = time.time()

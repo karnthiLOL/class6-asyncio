@@ -21,9 +21,15 @@ import asyncio
 import time
 
 async def cook(food, t):
-    
+    print(f'{time.ctime()} - Microwave ({food}): Cooking {t} seconds...')
+    await asyncio.sleep(t)
+    print(f'{time.ctime()} - Microwave ({food}): Finished cooking')
+    return f'{food} is completed'    
 
 async def main():
+    coros = [cook('Rice', 5), cook('Noodle', 3), cook('Curry', 1)]
+    result = await asyncio.gather(*coros)
+    print(f"{time.ctime()} = {result}")
     
 
 if __name__ == '__main__':
@@ -31,3 +37,15 @@ if __name__ == '__main__':
     asyncio.run(main())
     t2 = time.time() - t1
     print(f'Executed in {t2:0.2f} seconds.')
+
+
+## Result
+# PS E:\00Lab\IOT\asyncio_exercise\class6-asyncio> & C:/Users/karnt/AppData/Local/Programs/Python/Python310/python.exe e:/00Lab/IOT/asyncio_exercise/class6-asyncio/machine/1-3-1-microwave-async.py
+# Wed Aug  9 14:30:14 2023 - Microwave (Rice): Cooking 5 seconds...
+# Wed Aug  9 14:30:14 2023 - Microwave (Noodle): Cooking 3 seconds...
+# Wed Aug  9 14:30:14 2023 - Microwave (Curry): Cooking 1 seconds... 
+# Wed Aug  9 14:30:15 2023 - Microwave (Curry): Finished cooking
+# Wed Aug  9 14:30:17 2023 - Microwave (Noodle): Finished cooking
+# Wed Aug  9 14:30:19 2023 - Microwave (Rice): Finished cooking
+# Wed Aug  9 14:30:19 2023 = ['Rice is completed', 'Noodle is completed', 'Curry is completed']
+# Executed in 5.02 seconds.
